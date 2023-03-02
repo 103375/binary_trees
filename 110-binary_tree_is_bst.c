@@ -1,70 +1,54 @@
 #include "binary_trees.h"
-#include <stdio.h>
 
 /**
- * greater_than - check if all values in the tree are greater than a value
- * @tree: pointer to the tree to check
- * @val: value to check against
- *
- * Return: 1 if true, 0 if false
+ * binary_tree_is_bst - checks if a binary tree is a valid Binary Search Tree
+ * @tree: pointer to the tree tree of the tree
+ * Return: 1 if true or 0 otherwise
  */
-int greater_than(const binary_tree_t *tree, int val)
-{
-	int l, r;
 
-	if (tree == NULL)
-		return (1);
-	if (tree->n > val)
-	{
-		l = greater_than(tree->left, val);
-		r = greater_than(tree->right, val);
-		if (l && r)
-			return (1);
-	}
-	return (0);
-}
-
-/**
- * less_than - check if all values in the tree are less than a specific value
- * @tree: pointer to the tree to check
- * @val: value to check against
- *
- * Return: 1 if true, 0 if false
- */
-int less_than(const binary_tree_t *tree, int val)
-{
-	int l, r;
-
-	if (tree == NULL)
-		return (1);
-	if (tree->n < val)
-	{
-		l = less_than(tree->left, val);
-		r = less_than(tree->right, val);
-		if (l && r)
-			return (1);
-	}
-	return (0);
-}
-
-/**
- * binary_tree_is_bst - checks if a binary tree is a valid binary search tree
- * @tree: pointer to the root node of the tree to check
- *
- * Return: 1 if tree is a valid BST, and 0 otherwise. If tree is NULL, return 0
- */
 int binary_tree_is_bst(const binary_tree_t *tree)
 {
 	if (tree == NULL)
 		return (0);
-	if (less_than(tree->left, tree->n) && greater_than(tree->right, tree->n))
-	{
-		if (!tree->left || binary_tree_is_bst(tree->left))
-		{
-			if (!tree->right || binary_tree_is_bst(tree->right))
-				return (1);
-		}
 
+	return (isValid((binary_tree_t *)tree));
+}
+
+/**
+ * isValid - checks it bt is bst
+ * @root: root node
+ * Return: 1 or 0
+ */
+
+int isValid(binary_tree_t *root)
+{
+	int isvalid[] = {1};
+	binary_tree_t *prev[] = {NULL};
+
+	inorder(root, prev, isvalid);
+	return (isvalid[0]);
+}
+
+/**
+ * inorder - helper function for isValid
+ * @root: pointer to node
+ * @prev: array of prev pointers to nodes
+ * @isvalid: array of numbers
+ * Return: 1 or 0
+ */
+
+void inorder(binary_tree_t *root, binary_tree_t *prev[], int isvalid[])
+{
+	if (root != NULL)
+	{
+		inorder(root->left, prev, isvalid);
+
+		if (prev[0] != NULL && prev[0]->n >= root->n)
+		{
+			isvalid[0] = 0;
+			return;
+		}
+		prev[0] = root;
+		inorder(root->right, prev, isvalid);
 	}
-	return (0);
 }
